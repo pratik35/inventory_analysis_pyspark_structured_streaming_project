@@ -1,0 +1,14 @@
+{
+    "type" : "struct",
+    "fields" : [ 
+        {"name" : "Brand","type" : "integer","nullable" : true,"metadata" : { }}, 
+        {"name" : "Description","type" : "string","nullable" : true,"metadata" : { }}, 
+        {"name" : "Price","type" : "double","nullable" : true,"metadata" : { }}, 
+        {"name" : "Size","type" : "string","nullable" : true,"metadata" : { }},
+        {"name" : "Volume","type" : "string","nullable" : true,"metadata" : { }},
+        {"name" : "Classification","type" : "integer","nullable" : true,"metadata" : { }},
+        {"name" : "PurchasePrice","type" : "double","nullable" : true,"metadata" : { }},
+        {"name" : "VendorNumber","type" : "integer","nullable" : true,"metadata" : { }},
+        {"name" : "VendorName","type" : "string","nullable" : true,"metadata" : { }}
+    ]
+  }

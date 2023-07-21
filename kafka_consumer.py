@@ -1,11 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
-import avro.schema
-from avro.datafile import DataFileReader
-from kafka import KafkaConsumer
-from json import loads
-import time
+import json
 import os
 import sys
 
@@ -18,19 +14,20 @@ if __name__ == "__main__":
     print("Reading Messages from Kafka topic about to start.....")
     spark = SparkSession.builder.appName("PySpark Structured Streaming with Kafka").getOrCreate()
     spark.sparkContext.setLogLevel('WARN')
-    schema = StructType([
-        StructField(name='Brand',dataType=StringType()),
-        StructField(name='Description',dataType=StringType()),
-        StructField(name='Price',dataType=StringType()),
-        StructField(name='Size',dataType=StringType()),
-        StructField(name='Volume',dataType=StringType()),
-        StructField(name='Classification',dataType=StringType()),
-        StructField(name='PurchasePrice',dataType=StringType()),
-        StructField(name='VendorNumber',dataType=StringType()),
-        StructField(name='VendorName',dataType=StringType())
-    ])
-
-
+    
+    f = open('schema.json')
+    json_load = json.load(f)
+    schema = StructType()
+    for i in json_load['fields']:
+        field=i['name']
+        nullable=i['nullable']
+        if i['type'] == "string":
+            dataType=StringType()
+        elif i['type'] == "integer":
+            dataType=IntegerType()
+        else:
+            dataType=DecimalType()
+        schema.add(i['name'],dataType,nullable)
     read=spark \
         .readStream \
         .format("kafka") \
