@@ -10,3 +10,6 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1 kafka_c
 
 Start the producer:
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1 kafka_producer.py
+
+http://localhost:4050/jobs/ -> consumer Spark UI
+http://localhost:4060/jobs/ -> Producer Spark UI
