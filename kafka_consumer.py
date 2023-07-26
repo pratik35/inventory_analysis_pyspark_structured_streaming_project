@@ -18,6 +18,7 @@ def foreach_batch_function(df,batchId):
         sum('Volume').alias('Total_Volume') \
     )
     df.show(truncate=False)
+    #df.coalesce(1).write.mode('overwrite').format('parquet').save('hdfs://localhost:9000/input')
 
 def read_schema():
     f = open('schema.json')
@@ -48,7 +49,7 @@ if __name__ == "__main__":
         .format("kafka") \
         .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP_SERVERS_CONS) \
         .option("subscribe", KAFKA_INPUT_TOPIC_NAME_CONS) \
-        .option("startingOffsets", "latest") \
+        .option("startingOffsets", "earliest") \
         .option("failOnDataLoss", "true") \
         .option("maxOffsetsPerTrigger", 1000) \
         .load()
@@ -71,3 +72,4 @@ if __name__ == "__main__":
     #read.writeStream.format("console") won't print the dataset when we we are using foreachBatch
     #.trigger(processingTime="1 minutes") will check for new messages on the Kafka stream every 1 minutes 
     #.option("maxOffsetsPerTrigger", 1000) \ reads 1000 messages per batch
+    #.option("startingOffsets", "earliest") \ will read messages present in the kafka queue and 'latest' will read only after consumer is started and if we send messages after consumer has started

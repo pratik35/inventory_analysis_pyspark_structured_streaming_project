@@ -13,14 +13,7 @@ KAFKA_BOOTSTRAP_SERVERS_CONS = 'localhost:9092'
 os.environ['PYSPARK_PYTHON'] = sys.executable
 os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
 
-if __name__ == "__main__":
-    print("Kafka Producer Application Started ... ")
-    kafka_producer_obj = KafkaProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS_CONS,
-                             value_serializer=lambda x: dumps(x).encode('utf-8'))
-    spark = SparkSession.builder.appName("PySpark Structured Streaming with Kafka").config("spark.ui.port","4060").getOrCreate() #json.dumps() method can convert a Python object into a JSON string.
-    spark.sparkContext.setLogLevel('WARN')
-    df = spark.read.csv("Dataset/2017PurchasePricesDec.csv",header=True,inferSchema=True) 
-    print(type(df.schema.names))
+def send_message_to_kafka(df,kafka_obj):
     dataCollect = df.collect()
     message = None
     df.printSchema()
@@ -31,4 +24,16 @@ if __name__ == "__main__":
       print("Message to be sent: ", message)
       kafka_producer_obj.send(KAFKA_INPUT_TOPIC_NAME_CONS, message)
       #time.sleep(10)
+
+if __name__ == "__main__":
+    print("Kafka Producer Application Started ... ")
+    kafka_producer_obj = KafkaProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS_CONS,
+                             value_serializer=lambda x: dumps(x).encode('utf-8'))
+    spark = SparkSession.builder.appName("PySpark Structured Streaming with Kafka").config("spark.ui.port","4060").getOrCreate() #json.dumps() method can convert a Python object into a JSON string.
+    spark.sparkContext.setLogLevel('WARN')
+    df = spark.read.csv("Dataset/2017PurchasePricesDec.csv",header=True,inferSchema=True) 
+    print(type(df.schema.names))
+    send_message_to_kafka(df,kafka_producer_obj)
+    
+      
       
